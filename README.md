@@ -1,43 +1,50 @@
-# Marketing A/B Test & Ad Frequency Optimization Analysis
+# Marketing A/B Test Analysis
 
-## 📊 Project Overview
-This project evaluates a large-scale digital marketing A/B test dataset (**~588,000 user rows**) to measure whether an advertising campaign successfully drove product conversions compared to a Public Service Announcement (PSA) control group. 
+An end-to-end analysis of a digital advertising experiment comparing product ads with a public service announcement (PSA) control. The project uses Python to validate the dataset, compare conversion rates, quantify uncertainty, and examine descriptive segments.
 
-Beyond standard conversion rate comparisons, this analysis investigates **ad exposure intensity** to identify user saturation thresholds and provide data-backed media frequency capping recommendations.
+## Project question
 
----
+Did users in the ad group convert at a different rate from users in the PSA group? The primary metric is user-level conversion rate. The notebook reports a two-sided two-proportion z-test and a 95% Newcombe confidence interval for the absolute difference.
 
-## 🛠️ Tech Stack & Statistical Methods
-* **Language:** Python
-* **Libraries:** Pandas, NumPy, Statsmodels, Seaborn, Matplotlib
-* **Statistical Methods:**
-  * **Descriptive Statistics:** Conversion rates across test groups, weekdays, and exposure bins.
-  * **Hypothesis Testing:** Two-Proportion Z-Test to evaluate statistical significance.
-  * **Confidence Intervals:** 95% Confidence Interval for the true difference in conversion rates.
-  * **Behavioral Segmentation:** Grouping users by ad exposure intensity to detect diminishing returns.
+## Key findings
 
----
+- **588,101 users** across the two groups; no missing cells or duplicate user IDs in the supplied dataset.
+- **Ads:** 14,423 / 564,577 converted (**2.555%**). **PSA:** 420 / 23,524 converted (**1.785%**).
+- The estimated absolute difference (Ads − PSA) is **0.769 percentage points** (about **43.1% relative lift** vs. PSA); z = **7.370**, two-sided p = **1.71 × 10⁻¹³**.
+- The 95% Newcombe interval for the absolute difference is approximately **0.587 to 0.936 percentage points**.
 
-## 📈 Key Statistical Findings
-1. **Conversion Lift:** The treatment group (Ads) achieved a statistically significant higher conversion rate than the control group (PSA) ($p < 0.001$).
-2. **Confidence Interval:** We are 95% confident that the true lift in conversion rate driven by the ad campaign falls within a statistically reliable positive margin.
-3. **Ad Fatigue & Saturation:** Analysis of total ad exposure revealed that conversion rates peak at specific frequency thresholds, after which additional ad impressions yield diminishing returns due to user ad fatigue.
+These results describe the provided groups. A causal interpretation depends on the original assignment and measurement process. Statistical significance alone does not show that the campaign was profitable; cost and revenue data are not provided.
 
----
+## Analysis and limitations
 
-## 📊 Visualizations
-![Analysis Dashboard](outputs/figures/marketing_ab_analysis.png)
+The notebook also compares conversion rates by weekday and observed ad-exposure bands. Exposure is measured after group assignment and is not randomized in this dataset, so these breakdowns are descriptive. They do **not** establish an optimal frequency cap or prove ad fatigue. The observed group allocation is about 96% Ads / 4% PSA; check it against the experiment plan before assessing allocation quality.
 
----
+## Repository contents
 
-## 💡 Business Recommendations
-* **Scale the Campaign:** The ad campaign proved both statistically and practically effective at driving higher conversion compared to the PSA baseline. Media spend should be continued.
-* **Implement Frequency Capping:** Because conversion efficiency drops past a certain ad threshold, marketing teams should implement frequency caps to prevent ad fatigue, reduce wasted ad spend, and protect brand perception.
+```text
+├── data/README.md
+├── notebooks/marketing_ab_analysis.ipynb
+├── outputs/figures/marketing_ab_analysis.png
+├── requirements.txt
+└── README.md
+```
 
----
+## Run the notebook
 
-## 🚀 How to Run the Project
-1. Clone this repository.
-2. Install the required dependencies:
+1. Download `marketing_AB.csv` from the [Kaggle dataset page](https://www.kaggle.com/datasets/faviovaz/marketing-ab-testing) and place it at `data/marketing_AB.csv`. Dataset download details are in [`data/README.md`](data/README.md).
+2. Create and activate a virtual environment, then install dependencies:
+
    ```bash
+   python -m venv .venv
+   # macOS/Linux
+   source .venv/bin/activate
+   # Windows PowerShell: .venv\Scripts\Activate.ps1
    pip install -r requirements.txt
+   jupyter notebook
+   ```
+
+3. Open [`notebooks/marketing_ab_analysis.ipynb`](notebooks/marketing_ab_analysis.ipynb) and run all cells. The notebook locates the project root whether Jupyter starts from the repository root or the `notebooks` folder.
+
+## Visualization
+
+![Conversion and exploratory segment analysis](outputs/figures/marketing_ab_analysis.png)
